@@ -20,8 +20,9 @@ const removeContact = async (contactId) => {
   const index = contacts.findIndex(({ id }) => {
     return id === contactId.toString();
   });
+
   if (index === -1) {
-    return 0;
+    return null;
   }
   const [removedContacts] = contacts.splice(index, 1);
   const data = JSON.stringify(contacts);
@@ -56,7 +57,7 @@ const updateContact = async (contactId, body) => {
   });
 
   if (index === -1) {
-    return -1;
+    return null;
   }
 
   const contact = { ...contacts[index], name, email, phone };
