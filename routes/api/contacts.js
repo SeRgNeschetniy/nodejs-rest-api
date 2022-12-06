@@ -1,24 +1,36 @@
 const express = require("express");
+
 const {
+  addContact,
   getContacts,
-  getContactnbyId,
-  postContact,
+  getContactById,
   deleteContact,
-  putContact,
+  updateContactById,
+  updateContactFavorite,
 } = require("../../controllers/contactsController");
-const {
-  //   addContactsValidation,
-  //   putContactsValidation,
-  validator,
-} = require("../../middlewares/validationMidlewares");
-const { contactSchema } = require("../../schemas/contactSchema");
+const ctrlWrapper = require("../../helpers/apiHelpers");
+const isValidId = require("../../middlewares/isValidId");
+
+const { validator } = require("../../middlewares/validationMidlewares");
+const { schemas } = require("../../models/contact");
 
 const router = express.Router();
 
-router.get("/", getContacts);
-router.get("/:contactId", getContactnbyId);
-router.post("/", validator(contactSchema), postContact);
-router.delete("/:contactId", deleteContact);
-router.put("/:contactId", validator(contactSchema), putContact);
+router.get("/", ctrlWrapper(getContacts));
+router.get("/:contactId", isValidId, ctrlWrapper(getContactById));
+router.post("/", validator(schemas.addContactSchema), ctrlWrapper(addContact));
+router.delete("/:contactId", isValidId, ctrlWrapper(deleteContact));
+router.put(
+  "/:contactId",
+  isValidId,
+  validator(schemas.addContactSchema),
+  ctrlWrapper(updateContactById)
+);
+router.patch(
+  "/:contactId/favorite",
+  isValidId,
+  validator(schemas.updateFavoriteSchema),
+  ctrlWrapper(updateContactFavorite)
+);
 
 module.exports = router;
